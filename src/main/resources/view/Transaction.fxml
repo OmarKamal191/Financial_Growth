@@ -20,7 +20,7 @@
     <left>
         <AnchorPane prefHeight="500.0" prefWidth="180.0" style="-fx-background-color: #64D96F;" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="400.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true" layoutX="0" layoutY="50">
+                <ImageView fitHeight="500.0" fitWidth="250.0" layoutX="-10.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/logo.png" />
                     </image>
@@ -65,15 +65,15 @@
 
                 <Label fx:id="messageLabel" layoutX="22.0" layoutY="320.0" prefWidth="149.0" wrapText="true" />
 
-                <Button layoutX="22.0" layoutY="345.0" mnemonicParsing="false" onAction="#handleAddTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #64D96F;" text="ADD TRANSACTION">
+                <Button layoutX="22.0" layoutY="371.0" mnemonicParsing="false" onAction="#handleAddTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #64D96F;" text="ADD TRANSACTION">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="22.0" layoutY="378.0" mnemonicParsing="false" onAction="#handleEditTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white;" text="UPDATE SELECTED">
+                <Button layoutX="22.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleEditTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white;" text="UPDATE SELECTED">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="22.0" layoutY="411.0" mnemonicParsing="false" onAction="#handleDeleteTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white;" text="DELETE SELECTED">
+                <Button layoutX="22.0" layoutY="441.0" mnemonicParsing="false" onAction="#handleDeleteTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white;" text="DELETE SELECTED">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
@@ -81,12 +81,12 @@
                     <font><Font name="System Bold" size="13.0" /></font>
                 </Text>
 
-                <TableView fx:id="transactionTable" layoutX="195.0" layoutY="108.0" prefWidth="450.0" prefHeight="220.0">
+                <TableView fx:id="transactionTable" layoutX="195.0" layoutY="108.0" prefHeight="220.0" prefWidth="450.0">
                     <columns>
-                        <TableColumn fx:id="amountCol" text="Amount" prefWidth="90" />
-                        <TableColumn fx:id="descCol" text="Description" prefWidth="160" />
-                        <TableColumn fx:id="dateCol" text="Date" prefWidth="100" />
-                        <TableColumn fx:id="typeCol" text="Type" prefWidth="90" />
+                        <TableColumn fx:id="amountCol" prefWidth="90" text="Amount" />
+                        <TableColumn fx:id="descCol" prefWidth="160" text="Description" />
+                        <TableColumn fx:id="dateCol" prefWidth="100" text="Date" />
+                        <TableColumn fx:id="typeCol" prefWidth="90" text="Type" />
                     </columns>
                 </TableView>
 
@@ -104,7 +104,7 @@
                     <font><Font name="System Bold" size="11.0" /></font>
                 </Button>
 
-                <ListView fx:id="categoryListView" layoutX="195.0" layoutY="390.0" prefWidth="450.0" prefHeight="85.0" />
+                <ListView fx:id="categoryListView" layoutX="195.0" layoutY="390.0" prefHeight="85.0" prefWidth="450.0" />
 
             </children>
         </AnchorPane>

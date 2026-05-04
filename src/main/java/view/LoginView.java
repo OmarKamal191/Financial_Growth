@@ -48,7 +48,7 @@ public class LoginView {
     @FXML
     private void handleSignUpLink() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/view/Transaction.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/view/Register.fxml"));
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Personal Budgeting - Register");
