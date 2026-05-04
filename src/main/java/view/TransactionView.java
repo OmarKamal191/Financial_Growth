@@ -18,7 +18,7 @@ public class TransactionView {
     @FXML private TextField amountField;
     @FXML private TextField descriptionField;
     @FXML private DatePicker datePicker;
-    @FXML private ComboBox<String> typeCombo;       // INCOME / EXPENSE
+    @FXML private ComboBox<String> typeCombo;
     @FXML private ComboBox<String> categoryCombo;
     @FXML private Label messageLabel;
 

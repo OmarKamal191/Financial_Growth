@@ -8,7 +8,7 @@ public abstract class Transaction {
     private double amount;
     private String description;
     private LocalDate date;
-    private String type; // "INCOME" or "EXPENSE"
+    private String type;
 
     public Transaction() {}
 
