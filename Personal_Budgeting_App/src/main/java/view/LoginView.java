@@ -2,10 +2,16 @@ package view;
 
 import controller.AuthController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import util.Validator;
+
+import java.io.IOException;
 
 public class LoginView {
 
@@ -32,7 +38,14 @@ public class LoginView {
 
         if (authController.login(email, password)) {
             showStatus("Login Successful! Redirecting...", "green");
-
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
+                Stage stage = (Stage) emailField.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Personal Budgeting - Transactions");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             showStatus("Invalid email or password. Try again.", "red");
         }
@@ -40,7 +53,15 @@ public class LoginView {
 
     @FXML
     private void handleSignUpLink() {
-        System.out.println("Navigating to Sign Up...");
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/Register.fxml"));
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Personal Budgeting - Register");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showStatus(String message, String color) {

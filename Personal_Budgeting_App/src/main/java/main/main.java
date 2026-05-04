@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
         primaryStage.setTitle("Personal Budgeting App");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);

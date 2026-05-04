@@ -1,4 +1,146 @@
-package view;
+<?xml version="1.0" encoding="UTF-8"?>
 
-public class GoalView {
-}
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="597.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GoalView">
+
+    <!-- ══ LEFT PANEL ══ -->
+    <left>
+        <AnchorPane prefHeight="590.0" prefWidth="180.0" style="-fx-background-color: #64D96F;" BorderPane.alignment="CENTER">
+            <children>
+                <ImageView fitHeight="400.0" fitWidth="311.0" layoutY="71.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/logo.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+    </left>
+
+    <!-- ══ CENTER PANEL ══ -->
+    <center>
+        <AnchorPane style="-fx-background-color: #D3D3D3;" BorderPane.alignment="CENTER">
+            <children>
+
+                <!-- ── Page Title ── -->
+                <Text layoutX="20.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🎯 Financial Goals">
+                    <font>
+                        <Font name="System Bold" size="20.0" />
+                    </font>
+                </Text>
+                <Text fill="#000000ad" layoutX="22.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Set saving targets and track your progress" />
+
+                <!-- ════════════════════════════════════
+         CREATE GOAL FORM (left column)
+                ════════════════════════════════════ -->
+                <Text layoutX="22.0" layoutY="95.0" text="Goal Name">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+                <TextField fx:id="goalNameField" layoutX="22.0" layoutY="100.0" prefWidth="200.0" promptText="e.g. New Laptop" />
+
+                <Text layoutX="22.0" layoutY="138.0" text="Target Amount">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+                <TextField fx:id="targetAmountField" layoutX="22.0" layoutY="143.0" prefWidth="200.0" promptText="e.g. 10000" />
+
+                <Text layoutX="22.0" layoutY="181.0" text="Deadline">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+                <DatePicker fx:id="deadlinePicker" layoutX="22.0" layoutY="186.0" prefWidth="200.0" />
+
+                <Label fx:id="statusLabel" layoutX="22.0" layoutY="224.0" prefWidth="200.0" wrapText="true" />
+
+                <Button layoutX="22.0" layoutY="248.0" mnemonicParsing="false" onAction="#handleCreateGoal" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #64D96F; -fx-font-weight: bold;" text="CREATE GOAL">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Button>
+
+                <!-- ── Update Progress ── -->
+                <Text layoutX="22.0" layoutY="300.0" text="Update Progress">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+                <TextField fx:id="addAmountField" layoutX="22.0" layoutY="305.0" prefWidth="130.0" promptText="Add amount" />
+                <Button layoutX="158.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleUpdateProgress" prefHeight="25.0" prefWidth="64.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white;" text="+ Add">
+                    <font>
+                        <Font name="System Bold" size="11.0" />
+                    </font>
+                </Button>
+
+                <!-- ── State Buttons ── -->
+                <Button fx:id="pauseResumeBtn" layoutX="22.0" layoutY="340.0" mnemonicParsing="false" onAction="#handlePauseResume" prefHeight="25.0" prefWidth="95.0" style="-fx-background-color: #FAB387; -fx-text-fill: white;" text="PAUSE">
+                    <font>
+                        <Font name="System Bold" size="11.0" />
+                    </font>
+                </Button>
+                <Button layoutX="123.0" layoutY="340.0" mnemonicParsing="false" onAction="#handleCancelGoal" prefHeight="25.0" prefWidth="99.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white;" text="CANCEL">
+                    <font>
+                        <Font name="System Bold" size="11.0" />
+                    </font>
+                </Button>
+
+                <Button layoutX="22.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleDeleteGoal" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #888; -fx-text-fill: white;" text="DELETE SELECTED">
+                    <font>
+                        <Font name="System Bold" size="11.0" />
+                    </font>
+                </Button>
+
+                <!-- ════════════════════════════════════
+         GOALS TABLE (right column)
+                ════════════════════════════════════ -->
+                <Text layoutX="240.0" layoutY="95.0" text="Your Goals">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Text>
+
+                <TableView fx:id="goalsTable" layoutX="240.0" layoutY="102.0" prefHeight="290.0" prefWidth="530.0">
+                    <columns>
+                        <TableColumn fx:id="colGoalName" prefWidth="130" text="Goal" />
+                        <TableColumn fx:id="colTarget" prefWidth="90" text="Target" />
+                        <TableColumn fx:id="colSaved" prefWidth="90" text="Saved" />
+                        <TableColumn fx:id="colGoalStatus" prefWidth="120" text="Status" />
+                        <TableColumn fx:id="colDeadline" prefWidth="100" text="Deadline" />
+                    </columns>
+                </TableView>
+
+                <!-- ── Progress Bar for selected goal ── -->
+                <Text layoutX="240.0" layoutY="408.0" text="Selected Goal Progress">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+
+                <ProgressBar fx:id="goalProgressBar" layoutX="240.0" layoutY="415.0" prefHeight="18.0" prefWidth="530.0" progress="0.0" />
+
+                <Label fx:id="progressLabel" layoutX="240.0" layoutY="440.0" prefWidth="530.0" text="Select a goal to see progress">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+
+            </children>
+        </AnchorPane>
+    </center>
+
+</BorderPane>

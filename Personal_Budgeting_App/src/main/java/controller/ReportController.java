@@ -1,4 +1,4 @@
-package contoller;
+package controller;
 
 public class ReportController {
 }
