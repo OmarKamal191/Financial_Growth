@@ -150,4 +150,44 @@ public class TransactionDAO {
         }
         return list;
     }
+
+    public List<Transaction> getFilteredTransactions(int userId, String type, Integer categoryId) {
+        List<Transaction> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Transactions WHERE UserId = ?");
+
+        if (type != null && !type.equals("All Types")) {
+            sql.append(" AND Type = ?");
+        }
+        if (categoryId != null && categoryId > 0) {
+            sql.append(" AND CategoryId = ?");
+        }
+        sql.append(" ORDER BY Date DESC");
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            pstmt.setInt(paramIndex++, userId);
+
+            if (type != null && !type.equals("All Types")) {
+                pstmt.setString(paramIndex++, type);
+            }
+            if (categoryId != null && categoryId > 0) {
+                pstmt.setInt(paramIndex++, categoryId);
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String t = rs.getString("Type");
+                Transaction trans;
+                if ("INCOME".equals(t)) {
+                    trans = new Income(rs.getInt("TransactionId"), rs.getInt("UserId"), rs.getDouble("Amount"), rs.getString("Description"), rs.getDate("Date").toLocalDate());
+                } else {
+                    trans = new Expense(rs.getInt("TransactionId"), rs.getInt("UserId"), rs.getDouble("Amount"), rs.getString("Description"), rs.getDate("Date").toLocalDate(), rs.getInt("CategoryId"));
+                }
+                list.add(trans);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
 }

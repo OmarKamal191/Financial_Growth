@@ -6,10 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object for Budget.
- * Handles all database operations: create, read, update, delete.
- */
+
 public class BudgetDAO {
 
     private Connection connection;
@@ -18,16 +15,12 @@ public class BudgetDAO {
         try {
             this.connection = DBConnection.getConnection();
         } catch (SQLException e) {
-            System.out.println("خطأ: فشل الاتصال بقاعدة البيانات!");
+            System.out.println("Error connecting to database.");
             e.printStackTrace();
         }
     }
 
-    /**
-     * Inserts a new budget into the database.
-     * @param budget the budget to save
-     * @return true if successful
-     */
+
     public boolean createBudget(Budget budget) {
         String sql = "INSERT INTO Budgets (UserId, Amount, StartDate, EndDate, AlertThreshold) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -48,12 +41,7 @@ public class BudgetDAO {
         return false;
     }
 
-    /**
-     * Updates spentAmount for a given budget.
-     * @param budgetId the budget to update
-     * @param spentAmount new spent amount
-     * @return true if successful
-     */
+
     public boolean updateSpentAmount(int budgetId, double spentAmount) {
         String sql = "UPDATE Budgets SET SpentAmount = ? WHERE BudgetId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -66,11 +54,7 @@ public class BudgetDAO {
         return false;
     }
 
-    /**
-     * Retrieves all budgets for a given user.
-     * @param userId the user's ID
-     * @return list of Budget objects
-     */
+
     public List<Budget> getBudgetsByUser(int userId) {
         List<Budget> budgets = new ArrayList<>();
         String sql = "SELECT * FROM Budgets WHERE UserId = ?";
@@ -87,11 +71,7 @@ public class BudgetDAO {
         return budgets;
     }
 
-    /**
-     * Retrieves the active budget for a user (EndDate >= today).
-     * @param userId the user's ID
-     * @return active Budget or null
-     */
+
     public Budget getActiveBudget(int userId) {
         String sql = "SELECT * FROM Budgets WHERE UserId = ? AND EndDate >= CAST(GETDATE() AS DATE)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -104,11 +84,7 @@ public class BudgetDAO {
         return null;
     }
 
-    /**
-     * Deletes a budget by ID.
-     * @param budgetId the budget to delete
-     * @return true if successful
-     */
+
     public boolean deleteBudget(int budgetId) {
         String sql = "DELETE FROM Budgets WHERE BudgetId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -120,11 +96,7 @@ public class BudgetDAO {
         return false;
     }
 
-    /**
-     * Maps a ResultSet row to a Budget object.
-     * @param rs the ResultSet positioned at a valid row
-     * @return Budget object, or null if mapping fails
-     */
+
     private Budget mapRowToBudget(ResultSet rs) {
         try {
             Budget b = new Budget();

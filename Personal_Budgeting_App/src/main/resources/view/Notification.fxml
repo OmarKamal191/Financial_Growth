@@ -4,67 +4,57 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.NotificationView">
+<BorderPane prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.NotificationView">
 
-    <!-- ══ LEFT PANEL ══ -->
+    <!-- ══ LEFT PANEL: Sidebar ══ -->
     <left>
-        <AnchorPane prefHeight="500.0" prefWidth="180.0" style="-fx-background-color: #64D96F;" BorderPane.alignment="CENTER">
-            <children>
-                <ImageView fitHeight="500.0" fitWidth="244.0" layoutX="-6.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/logo.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </AnchorPane>
+        <fx:include source="sidebar.fxml"/>
     </left>
 
     <!-- ══ CENTER PANEL ══ -->
     <center>
-        <AnchorPane style="-fx-background-color: #D3D3D3;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="650.0" prefWidth="780.0" style="-fx-background-color: #F7F7F7;" BorderPane.alignment="CENTER">
             <children>
 
                 <!-- ── Page Title ── -->
-                <Text layoutX="20.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔔 Notifications">
-                    <font><Font name="System Bold" size="20.0" /></font>
+                <Text layoutX="30.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔔 Notifications">
+                    <font><Font name="System Bold" size="22.0" /></font>
                 </Text>
-                <Text fill="#000000ad" layoutX="22.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Budget alerts and goal milestone updates" />
+                <Text fill="#000000ad" layoutX="32.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Budget alerts and goal milestone updates" />
 
                 <!-- ── Unread badge ── -->
-                <Label fx:id="unreadBadge" layoutX="280.0" layoutY="20.0" prefWidth="60.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-weight: bold;" text="" />
+                <Label fx:id="unreadBadge" layoutX="370.0" layoutY="28.0" prefWidth="70.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-weight: bold;" text="" />
 
                 <!-- ── Action Buttons ── -->
-                <Button layoutX="22.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleMarkAllRead" prefHeight="25.0" prefWidth="170.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white;" text="✓ Mark All as Read">
+                <Button layoutX="32.0" layoutY="88.0" mnemonicParsing="false" onAction="#handleMarkAllRead" prefHeight="30.0" prefWidth="185.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white; -fx-background-radius: 8;" text="✓ Mark All as Read">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="200.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleMarkSelectedRead" prefHeight="25.0" prefWidth="170.0" style="-fx-background-color: #64D96F; -fx-font-weight: bold;" text="✓ Mark Selected Read">
+                <Button layoutX="225.0" layoutY="88.0" mnemonicParsing="false" onAction="#handleMarkSelectedRead" prefHeight="30.0" prefWidth="185.0" style="-fx-background-color: #159447; -fx-text-fill: white; -fx-background-radius: 8;" text="✓ Mark Selected Read">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="378.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #888; -fx-text-fill: white;" text="Refresh">
+                <Button layoutX="418.0" layoutY="88.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #888; -fx-text-fill: white; -fx-background-radius: 8;" text="Refresh">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
                 <!-- ── Notifications Table ── -->
-                <TableView fx:id="notificationTable" layoutX="22.0" layoutY="115.0" prefHeight="350.0" prefWidth="630.0">
+                <TableView fx:id="notificationTable" layoutX="32.0" layoutY="135.0" prefHeight="460.0" prefWidth="720.0">
                     <columns>
-                        <TableColumn fx:id="colType" prefWidth="110" text="Type" />
-                        <TableColumn fx:id="colMessage" prefWidth="310" text="Message" />
-                        <TableColumn fx:id="colTime" prefWidth="130" text="Time" />
-                        <TableColumn fx:id="colRead" prefWidth="80" text="Read" />
+                        <TableColumn fx:id="colType" prefWidth="130" text="Type" />
+                        <TableColumn fx:id="colMessage" prefWidth="380" text="Message" />
+                        <TableColumn fx:id="colTime" prefWidth="140" text="Time" />
+                        <TableColumn fx:id="colRead" prefWidth="70" text="Read" />
                     </columns>
                 </TableView>
 
                 <!-- ── Summary label ── -->
-                <Label fx:id="summaryLabel" layoutX="22.0" layoutY="473.0" prefWidth="630.0" text="">
+                <Label fx:id="summaryLabel" layoutX="32.0" layoutY="607.0" prefWidth="720.0" text="">
                     <font><Font size="12.0" /></font>
                 </Label>
 

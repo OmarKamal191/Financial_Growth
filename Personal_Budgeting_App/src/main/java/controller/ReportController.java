@@ -1,18 +1,11 @@
 package controller;
 
 import database.ReportDAO;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 import model.Report;
-
-import java.io.IOException;
+import model.User;
 import java.util.List;
 
 public class ReportController {
@@ -27,23 +20,27 @@ public class ReportController {
 
     @FXML
     public void initialize() {
-        int userId = 1;
+        User currentUser = AuthController.getCurrentUser();
 
-        loadExpensePieChart(userId);
-        loadIncomeExpenseBarChart(userId);
-        loadInsight(userId);
+        if (currentUser != null) {
+            int userId = currentUser.getUserId();
 
-        List<Report> expenses = reportDAO.getExpensesByCategory(1);
-        System.out.println("Expenses by category = " + expenses.size());
+            loadExpensePieChart(userId);
+            loadIncomeExpenseBarChart(userId);
+            loadInsight(userId);
 
-        for (Report r : expenses) {
-            System.out.println(r.getLabel() + " = " + r.getTotalAmount());
+            List<Report> expenses = reportDAO.getExpensesByCategory(userId);
+            System.out.println("Debug: Expenses by category count = " + expenses.size());
+            for (Report r : expenses) {
+                System.out.println(r.getLabel() + " = " + r.getTotalAmount());
+            }
+        } else {
+            insightLabel.setText("Please login to see your reports.");
         }
     }
 
     private void loadExpensePieChart(int userId) {
         expensePieChart.getData().clear();
-
         List<Report> expenses = reportDAO.getExpensesByCategory(userId);
 
         for (Report report : expenses) {
@@ -57,7 +54,6 @@ public class ReportController {
     }
 
     private void loadIncomeExpenseBarChart(int userId) {
-
         incomeExpenseBarChart.getData().clear();
 
         XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
@@ -89,7 +85,6 @@ public class ReportController {
         }
 
         Report highest = expenses.get(0);
-
         for (Report report : expenses) {
             if (report.getTotalAmount() > highest.getTotalAmount()) {
                 highest = report;
@@ -100,32 +95,5 @@ public class ReportController {
                 "💡 You spent the most on " + highest.getLabel() +
                         ". Consider reviewing this category."
         );
-    }
-
-    @FXML
-    private void openDashboard(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Dashboard.fxml");
-    }
-
-    @FXML
-    private void openReports(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Report.fxml");
-    }
-
-    @FXML
-    private void openNotifications(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Notification.fxml");
-    }
-
-    @FXML
-    private void logout(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Login.fxml");
-    }
-
-    private void switchScene(ActionEvent event, String path) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource(path));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
     }
 }

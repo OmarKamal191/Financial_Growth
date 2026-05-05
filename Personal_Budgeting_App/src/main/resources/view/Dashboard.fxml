@@ -2,18 +2,15 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
 
     <left>
-        <fx:include source="sidebar.fxml"/>
+        <fx:include source="sidebar.fxml" />
     </left>
 
     <center>
@@ -24,7 +21,7 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <Label fx:id="userIconLabel" alignment="CENTER" prefHeight="58.0" prefWidth="55.0" style="-fx-background-color: #159447; -fx-background-radius: 50; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 14; -fx-pref-height: 20;" text="U" />
+                <Label fx:id="userIconLabel" alignment="CENTER" prefHeight="58.0" prefWidth="55.0" style="-fx-background-color: #159447; -fx-background-radius: 50; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 14; -fx-pref-height: 20;" text="U" wrapText="true" />
             </HBox>
 
             <!-- Balance Card Smaller -->
@@ -52,9 +49,9 @@
             <HBox spacing="25">
                 <VBox prefHeight="95" prefWidth="250.0" spacing="5" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16 22 16 22; -fx-border-color: #E5E5E5; -fx-border-radius: 16;">
 
-                       <Label style="-fx-font-size: 15px; -fx-text-fill: #555;" text="Transactions" />
+                    <Label style="-fx-font-size: 15px; -fx-text-fill: #555;" text="Transactions" />
 
-                       <Label fx:id="transactionsCountLabel" style="-fx-font-size: 25px; -fx-font-weight: bold;" text="0" />
+                    <Label fx:id="transactionsCountLabel" style="-fx-font-size: 25px; -fx-font-weight: bold;" text="0" />
                 </VBox>
 
                 <VBox prefHeight="95" prefWidth="250" spacing="5" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16 22 16 22; -fx-border-color: #E5E5E5; -fx-border-radius: 16;">
@@ -79,20 +76,11 @@
                     <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Recent Transactions" />
 
                     <Region HBox.hgrow="ALWAYS" />
-               <Button fx:id="seeAllTLabel" mnemonicParsing="false" onAction="#seeAllTransactions" style="-fx-background-color: trancperancy; -fx-text-fill: #159447; -fx-font-weight: bold;" text="See All">
-                  <font>
-                     <Font size="14.0" />
-                  </font>
-               </Button>
+
+                    <Button fx:id="seeAllTLabel" mnemonicParsing="false" onAction="#seeAllTransactions" style="-fx-background-color: transparent; -fx-text-fill: #159447; -fx-font-weight: bold;" text="See All" />
                 </HBox>
-            <TableView fx:id="recentTrans" prefHeight="134.0" prefWidth="628.0">
-               <columns>
-                  <TableColumn prefWidth="125.59997481107712" text="Amount" />
-                  <TableColumn prefWidth="235.20001220703125" text="Desc" />
-                  <TableColumn prefWidth="167.20001220703125" text="Date" />
-                  <TableColumn prefWidth="102.4000244140625" text="Type" />
-               </columns>
-            </TableView>
+
+                <VBox fx:id="recentTransactionsBox" spacing="10" VBox.vgrow="ALWAYS" />
             </VBox>
 
         </VBox>

@@ -42,15 +42,63 @@ public class UserDAO {
         return null;
     }
 
-    public boolean updateProfile(int userId, String newName) {
-        String sql = "UPDATE Users SET Name = ? WHERE UserId = ?";
+    public boolean updateProfile(int userId, String newName, String newEmail, String newPassword) {
+        StringBuilder sql = new StringBuilder("UPDATE Users SET ");
+        boolean first = true;
+
+        if (!newName.isEmpty()) {
+            sql.append("Name = ?");
+            first = false;
+        }
+        if (!newEmail.isEmpty()) {
+            if (!first) sql.append(", ");
+            sql.append("Email = ?");
+            first = false;
+        }
+        if (!newPassword.isEmpty()) {
+            if (!first) sql.append(", ");
+            sql.append("Password = ?");
+        }
+
+        sql.append(" WHERE UserId = ?");
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, newName);
-            pstmt.setInt(2, userId);
-            return pstmt.executeUpdate() > 0;
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            if (!newName.isEmpty()) stmt.setString(paramIndex++, newName);
+            if (!newEmail.isEmpty()) stmt.setString(paramIndex++, newEmail);
+            if (!newPassword.isEmpty()) stmt.setString(paramIndex++, newPassword);
+
+            stmt.setInt(paramIndex, userId);
+
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
+    }
+
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM Users WHERE UserId = ?"; // تأكد أن اسم العمود UserId صح في جدولك
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserId"));
+                user.setName(rs.getString("Name"));
+                user.setEmail(rs.getString("Email"));
+                return user;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null; // لو اليوزر مش موجود
     }
 }
