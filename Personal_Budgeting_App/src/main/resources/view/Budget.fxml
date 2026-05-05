@@ -18,9 +18,9 @@
 
     <!-- ══ LEFT PANEL ══ -->
     <left>
-        <AnchorPane prefHeight="546.0" prefWidth="241.0" style="-fx-background-color: #64D96F;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="546.0" prefWidth="241.0" style="-fx-background-color: #5CCF67;" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="552.0" fitWidth="285.0" layoutX="-19.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="491.0" fitWidth="271.0" layoutX="-15.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/logo.png" />
                     </image>
@@ -117,6 +117,7 @@
                     </columns>
                 </TableView>
 
+                <Button layoutX="22.0" layoutY="370.0" mnemonicParsing="false" onAction="#backToDashboard" style="-fx-background-color: transparent; -fx-text-fill: #169447;" text="← Back to Dashboard" underline="true" />
             </children>
         </AnchorPane>
     </center>

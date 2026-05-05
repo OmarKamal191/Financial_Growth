@@ -8,103 +8,102 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TransactionView">
+<BorderPane prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TransactionView">
 
+    <!-- ══ LEFT PANEL: Sidebar ══ -->
     <left>
-        <AnchorPane prefHeight="500.0" prefWidth="180.0" style="-fx-background-color: #64D96F;" BorderPane.alignment="CENTER">
-            <children>
-                <ImageView fitHeight="400.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true" layoutX="0" layoutY="50">
-                    <image>
-                        <Image url="@../images/logo.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </AnchorPane>
+        <fx:include source="sidebar.fxml"/>
     </left>
 
+    <!-- ══ CENTER PANEL ══ -->
     <center>
-        <AnchorPane style="-fx-background-color: #D3D3D3;" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="650.0" prefWidth="780.0" style="-fx-background-color: #F7F7F7;" BorderPane.alignment="CENTER">
             <children>
 
-                <Text layoutX="20.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transactions">
-                    <font><Font name="System Bold" size="18.0" /></font>
+                <!-- ── Page Title ── -->
+                <Text layoutX="30.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transactions">
+                    <font><Font name="System Bold" size="22.0" /></font>
                 </Text>
-                <Text fill="#000000ad" layoutX="22.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage your income and expenses" />
+                <Text fill="#000000ad" layoutX="32.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage your income and expenses" />
 
-                <Text layoutX="22.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount">
+                <!-- ════════════════════════════════════
+                     FORM (left column)
+                ════════════════════════════════════ -->
+                <Text layoutX="32.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Text>
-                <TextField fx:id="amountField" layoutX="22.0" layoutY="105.0" prefWidth="149.0" promptText="e.g. 500.0" />
+                <TextField fx:id="amountField" layoutX="32.0" layoutY="105.0" prefWidth="200.0" promptText="e.g. 500.0" />
 
-                <Text layoutX="22.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                <Text layoutX="32.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Text>
-                <TextField fx:id="descriptionField" layoutX="22.0" layoutY="148.0" prefWidth="149.0" promptText="e.g. Grocery shopping" />
+                <TextField fx:id="descriptionField" layoutX="32.0" layoutY="150.0" prefWidth="200.0" promptText="e.g. Grocery shopping" />
 
-                <Text layoutX="22.0" layoutY="186.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
+                <Text layoutX="32.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Text>
-                <DatePicker fx:id="datePicker" layoutX="22.0" layoutY="191.0" prefWidth="149.0" />
+                <DatePicker fx:id="datePicker" layoutX="32.0" layoutY="195.0" prefWidth="200.0" />
 
-                <Text layoutX="22.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type">
+                <Text layoutX="32.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Text>
-                <ComboBox fx:id="typeCombo" layoutX="22.0" layoutY="237.0" prefWidth="149.0" promptText="INCOME / EXPENSE" />
+                <ComboBox fx:id="typeCombo" layoutX="32.0" layoutY="243.0" prefWidth="200.0" promptText="INCOME / EXPENSE" />
 
-                <Text layoutX="22.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category (Expense only)">
+                <Text layoutX="32.0" layoutY="284.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category (Expense only)">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Text>
-                <ComboBox fx:id="categoryCombo" layoutX="22.0" layoutY="283.0" prefWidth="149.0" promptText="Select category" />
+                <ComboBox fx:id="categoryCombo" layoutX="32.0" layoutY="289.0" prefWidth="200.0" promptText="Select category" />
 
-                <Label fx:id="messageLabel" layoutX="22.0" layoutY="320.0" prefWidth="149.0" wrapText="true" />
+                <Label fx:id="messageLabel" layoutX="32.0" layoutY="328.0" prefWidth="200.0" wrapText="true" />
 
-                <Button layoutX="22.0" layoutY="345.0" mnemonicParsing="false" onAction="#handleAddTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #64D96F;" text="ADD TRANSACTION">
+                <Button layoutX="32.0" layoutY="355.0" mnemonicParsing="false" onAction="#handleAddTransaction" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #159447; -fx-text-fill: white; -fx-background-radius: 8;" text="ADD TRANSACTION">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="22.0" layoutY="378.0" mnemonicParsing="false" onAction="#handleEditTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white;" text="UPDATE SELECTED">
+                <Button layoutX="32.0" layoutY="393.0" mnemonicParsing="false" onAction="#handleEditTransaction" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #5B9BD5; -fx-text-fill: white; -fx-background-radius: 8;" text="UPDATE SELECTED">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Button layoutX="22.0" layoutY="411.0" mnemonicParsing="false" onAction="#handleDeleteTransaction" prefHeight="25.0" prefWidth="149.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white;" text="DELETE SELECTED">
+                <Button layoutX="32.0" layoutY="431.0" mnemonicParsing="false" onAction="#handleDeleteTransaction" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white; -fx-background-radius: 8;" text="DELETE SELECTED">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Button>
 
-                <Text layoutX="195.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction History">
-                    <font><Font name="System Bold" size="13.0" /></font>
+                <!-- ════════════════════════════════════
+                     RIGHT COLUMN: Table + Categories
+                ════════════════════════════════════ -->
+                <Text layoutX="265.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction History">
+                    <font><Font name="System Bold" size="15.0" /></font>
                 </Text>
 
-                <TableView fx:id="transactionTable" layoutX="195.0" layoutY="108.0" prefWidth="450.0" prefHeight="220.0">
+                <TableView fx:id="transactionTable" layoutX="265.0" layoutY="110.0" prefWidth="490.0" prefHeight="280.0">
                     <columns>
-                        <TableColumn fx:id="amountCol" text="Amount" prefWidth="90" />
-                        <TableColumn fx:id="descCol" text="Description" prefWidth="160" />
-                        <TableColumn fx:id="dateCol" text="Date" prefWidth="100" />
+                        <TableColumn fx:id="amountCol" text="Amount" prefWidth="110" />
+                        <TableColumn fx:id="descCol" text="Description" prefWidth="180" />
+                        <TableColumn fx:id="dateCol" text="Date" prefWidth="110" />
                         <TableColumn fx:id="typeCol" text="Type" prefWidth="90" />
                     </columns>
                 </TableView>
 
-                <Text layoutX="195.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Categories">
-                    <font><Font name="System Bold" size="13.0" /></font>
+                <Text layoutX="265.0" layoutY="410.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Categories">
+                    <font><Font name="System Bold" size="14.0" /></font>
                 </Text>
 
-                <TextField fx:id="categoryNameField" layoutX="195.0" layoutY="356.0" prefWidth="200.0" promptText="New category name" />
+                <TextField fx:id="categoryNameField" layoutX="265.0" layoutY="420.0" prefWidth="230.0" promptText="New category name" />
 
-                <Button layoutX="405.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleAddCategory" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: #64D96F;" text="Add Category">
+                <Button layoutX="503.0" layoutY="420.0" mnemonicParsing="false" onAction="#handleAddCategory" prefHeight="27.0" prefWidth="120.0" style="-fx-background-color: #159447; -fx-text-fill: white; -fx-background-radius: 8;" text="Add Category">
                     <font><Font name="System Bold" size="11.0" /></font>
                 </Button>
 
-                <Button layoutX="525.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleDeleteCategory" prefHeight="25.0" prefWidth="115.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white;" text="Delete Selected">
+                <Button layoutX="630.0" layoutY="420.0" mnemonicParsing="false" onAction="#handleDeleteCategory" prefHeight="27.0" prefWidth="125.0" style="-fx-background-color: #E05C5C; -fx-text-fill: white; -fx-background-radius: 8;" text="Delete Selected">
                     <font><Font name="System Bold" size="11.0" /></font>
                 </Button>
 
-                <ListView fx:id="categoryListView" layoutX="195.0" layoutY="390.0" prefWidth="450.0" prefHeight="85.0" />
+                <ListView fx:id="categoryListView" layoutX="265.0" layoutY="455.0" prefWidth="490.0" prefHeight="165.0" />
 
             </children>
         </AnchorPane>

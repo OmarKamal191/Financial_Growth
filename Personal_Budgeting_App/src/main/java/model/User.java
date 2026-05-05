@@ -33,7 +33,9 @@ public class User {
     public void setBalance(double balance) { this.balance = balance; }
 
 
-    public void updateProfile(String name) {
+    public void updateProfile(String name,String email, String password) {
         this.name = name;
+        this.password = password;
+        this.email = email;
     }
 }

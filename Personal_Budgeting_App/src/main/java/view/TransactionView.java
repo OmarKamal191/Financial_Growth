@@ -4,11 +4,18 @@ import controller.TransactionController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.Category;
 import model.Transaction;
 
+import javafx.event.ActionEvent;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -201,6 +208,7 @@ public class TransactionView {
         }
     }
 
+
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
     private void loadTransactions() {
@@ -229,5 +237,12 @@ public class TransactionView {
             messageLabel.setText(text);
             messageLabel.setStyle("-fx-text-fill: " + color + ";");
         }
+    }
+@FXML
+    public void backToDashboard(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

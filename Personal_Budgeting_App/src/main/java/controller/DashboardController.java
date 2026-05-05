@@ -1,6 +1,8 @@
 package controller;
 
 import database.DashboardDAO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,8 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import model.Dashboard;
+import model.Transaction;
+
 
 import java.io.IOException;
 
@@ -24,16 +29,17 @@ public class DashboardController {
     @FXML private Label transactionsCountLabel;
     @FXML private Label budgetsCountLabel;
     @FXML private Label goalsCountLabel;
+    @FXML private Label userIconLabel;
 
     @FXML
     public void initialize() {
-        loadDashboardData(1);
+        loadDashboardData(AuthController.getCurrentUser().getUserId());
     }
 
     private void loadDashboardData(int userId) {
         Dashboard dashboard = dashboardDAO.getDashboardData(userId);
 
-        welcomeLabel.setText("Hello, User");
+        welcomeLabel.setText("Hello, " + dashboardDAO.getUserName(userId));
 
         incomeLabel.setText(formatMoney(dashboard.getTotalIncome()));
         expenseLabel.setText(formatMoney(dashboard.getTotalExpense()));
@@ -42,26 +48,7 @@ public class DashboardController {
         transactionsCountLabel.setText(String.valueOf(dashboard.getTransactionsCount()));
         budgetsCountLabel.setText(String.valueOf(dashboard.getBudgetsCount()));
         goalsCountLabel.setText(String.valueOf(dashboard.getGoalsCount()));
-    }
-
-    @FXML
-    private void openDashboard(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Dashboard.fxml");
-    }
-
-    @FXML
-    private void openReports(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Report.fxml");
-    }
-
-    @FXML
-    private void openNotifications(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Notification.fxml");
-    }
-
-    @FXML
-    private void logout(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Login.fxml");
+        userIconLabel.setText(dashboardDAO.getFirstLetter(userId));
     }
 
     private void switchScene(ActionEvent event, String path) throws IOException {
@@ -73,5 +60,9 @@ public class DashboardController {
 
     private String formatMoney(double amount) {
         return String.format("$%.2f", amount);
+    }
+
+    public void seeAllTransactions(ActionEvent actionEvent) throws IOException {
+        switchScene(actionEvent, "/view/Transaction.fxml");
     }
 }

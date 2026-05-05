@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefWidth="220" spacing="28"
+      style="-fx-background-color: linear-gradient(to bottom, #42C66B, #169447); -fx-padding: 42 12 28 12;"
+      xmlns="http://javafx.com/javafx/26"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.SidebarController">
+
+    <Label style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"
+           text="FINANCIAL     GROWTH" wrapText="true" />
+
+    <Button fx:id="btnDashboard"     onAction="#openDashboard"     prefHeight="30.0" prefWidth="190" text="Dashboard" />
+    <Button fx:id="btnTransactions"  onAction="#openTransactions"  prefHeight="30.0" prefWidth="190" text="Transactions" />
+    <Button fx:id="btnBudgets"       onAction="#openBudgets"       prefHeight="30.0" prefWidth="190" text="Budgets" />
+    <Button fx:id="btnGoals"         onAction="#openGoals"         prefHeight="30.0" prefWidth="190" text="Goals" />
+    <Button fx:id="btnReports"       onAction="#openReports"       prefHeight="30.0" prefWidth="190" text="Reports" />
+    <Button fx:id="btnNotifications" onAction="#openNotifications" prefHeight="30.0" prefWidth="190" text="Notifications" />
+    <Button fx:id="btnProfile"       onAction="#openProfile"       prefHeight="30.0" prefWidth="190" text="Profile" />
+
+    <Region VBox.vgrow="ALWAYS" />
+
+    <Button onAction="#logout" prefHeight="42" prefWidth="190" text="Logout"
+            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;" />
+
+</VBox>
