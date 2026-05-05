@@ -29,6 +29,10 @@ public class TransactionView {
     @FXML private ComboBox<String> categoryCombo;
     @FXML private Label messageLabel;
 
+    // ─── Filters Section (New) ──────────────────────────────────────────────
+    @FXML private ComboBox<String> filterTypeCombo;
+    @FXML private ComboBox<String> filterCategoryCombo;
+
     // ─── Transaction Table ───────────────────────────────────────────────────
     @FXML private TableView<Transaction> transactionTable;
     @FXML private TableColumn<Transaction, Double> amountCol;
@@ -45,14 +49,16 @@ public class TransactionView {
     private ObservableList<String> categoryNames = FXCollections.observableArrayList();
     private List<Category> categories;
 
-    // Called automatically by JavaFX after FXML loads
     @FXML
     public void initialize() {
-        // Setup type combo
+        // 1. Setup Form type combo
         if (typeCombo != null)
             typeCombo.setItems(FXCollections.observableArrayList("INCOME", "EXPENSE"));
 
-        // Setup table columns
+        // 2. Setup Filter Combos (New)
+        setupFilters();
+
+        // 3. Setup Table columns
         if (amountCol != null) amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         if (descCol != null)   descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         if (dateCol != null)   dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -63,8 +69,47 @@ public class TransactionView {
         loadCategories();
     }
 
-    // ─── USER STORY 4: Add Transaction ───────────────────────────────────────
+    private void setupFilters() {
+        if (filterTypeCombo != null) {
+            filterTypeCombo.setItems(FXCollections.observableArrayList("All Types", "INCOME", "EXPENSE"));
+            filterTypeCombo.setValue("All Types");
+            // التحديث عند التغيير
+            filterTypeCombo.setOnAction(e -> applyFilters());
+        }
 
+        if (filterCategoryCombo != null) {
+            // التحديث عند التغيير
+            filterCategoryCombo.setOnAction(e -> applyFilters());
+        }
+    }
+
+    private void applyFilters() {
+        String type = (filterTypeCombo != null) ? filterTypeCombo.getValue() : "All Types";
+        String selectedCatName = (filterCategoryCombo != null) ? filterCategoryCombo.getValue() : null;
+
+        Integer catId = null;
+        if (selectedCatName != null && categories != null) {
+            catId = categories.stream()
+                    .filter(c -> c.getName().equals(selectedCatName))
+                    .map(Category::getCategoryId)
+                    .findFirst().orElse(null);
+        }
+
+        // مناداة الكنترولر بالميثود الجديدة
+        List<Transaction> filtered = transactionController.getFilteredTransactions(type, catId);
+        transactionList.setAll(filtered);
+    }
+
+    @FXML
+    private void handleClearFilters(ActionEvent event) {
+        if (filterTypeCombo != null) filterTypeCombo.setValue("All Types");
+        if (filterCategoryCombo != null) filterCategoryCombo.setValue(null);
+
+        loadTransactions(); // إعادة تحميل الكل
+        if (messageLabel != null) messageLabel.setText("Filters cleared.");
+    }
+
+    // ─── USER STORY 4: Add Transaction ───────────────────────────────────────
     @FXML
     private void handleAddTransaction() {
         String amountText = amountField.getText();
@@ -105,7 +150,6 @@ public class TransactionView {
     }
 
     // ─── USER STORY 5: Edit / Delete Transaction ──────────────────────────────
-
     @FXML
     private void handleEditTransaction() {
         Transaction selected = transactionTable.getSelectionModel().getSelectedItem();
@@ -167,7 +211,6 @@ public class TransactionView {
     }
 
     // ─── USER STORY 6: Manage Categories ─────────────────────────────────────
-
     @FXML
     private void handleAddCategory() {
         String name = categoryNameField.getText();
@@ -208,20 +251,21 @@ public class TransactionView {
         }
     }
 
-
     // ─── Helpers ─────────────────────────────────────────────────────────────
-
     private void loadTransactions() {
-        transactionList.clear();
-        transactionList.addAll(transactionController.getAllTransactions());
+        transactionList.setAll(transactionController.getAllTransactions());
     }
 
     private void loadCategories() {
         categories = transactionController.getCategories();
         categoryNames.clear();
         categories.forEach(c -> categoryNames.add(c.getName()));
+
         if (categoryListView != null) categoryListView.setItems(categoryNames);
         if (categoryCombo != null) categoryCombo.setItems(categoryNames);
+
+        // تحديث قائمة الكاتيجوري في الفلتر برضه
+        if (filterCategoryCombo != null) filterCategoryCombo.setItems(categoryNames);
     }
 
     private void clearTransactionForm() {
@@ -238,7 +282,8 @@ public class TransactionView {
             messageLabel.setStyle("-fx-text-fill: " + color + ";");
         }
     }
-@FXML
+
+    @FXML
     public void backToDashboard(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
