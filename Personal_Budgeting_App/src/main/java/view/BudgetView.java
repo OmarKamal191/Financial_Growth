@@ -2,8 +2,9 @@ package view;
 
 import controller.AuthController;
 import controller.BudgetController;
+import database.TransactionDAO;
+import model.Category;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class BudgetView {
 
+    @FXML private ComboBox<Category> categoryComboBox;
     @FXML private TextField amountField;
     @FXML private TextField thresholdField;
     @FXML private DatePicker startDatePicker;
@@ -36,6 +38,7 @@ public class BudgetView {
     @FXML private ProgressBar budgetProgressBar;
 
     @FXML private TableView<Budget> budgetTable;
+    @FXML private TableColumn<Budget, String> colCategory; // تم التغيير لـ String لعرض الاسم
     @FXML private TableColumn<Budget, Double> colAmount;
     @FXML private TableColumn<Budget, Double> colSpent;
     @FXML private TableColumn<Budget, Double> colRemaining;
@@ -43,82 +46,108 @@ public class BudgetView {
     @FXML private TableColumn<Budget, LocalDate> colEnd;
 
     private BudgetController budgetController = new BudgetController();
-
-    // تأكد أن هذا الـ ID هو رقم 1 كما هو مسجل في قاعدة بياناتك حالياً
-    private int currentUserId ;
+    private TransactionDAO transactionDAO = new TransactionDAO();
+    private int currentUserId;
 
     @FXML
     public void initialize() {
-        // ربط الأعمدة بأسماء المتغيرات في كلاس Budget.java بالظبط
         if (AuthController.getCurrentUser() != null) {
             this.currentUserId = AuthController.getCurrentUser().getUserId();
         }
+
+        loadCategories();
+
+        // ربط الأعمدة (التأكد من استخدام categoryName)
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colSpent.setCellValueFactory(new PropertyValueFactory<>("spentAmount"));
-
-        // حساب الـ Remaining للجدول
         colRemaining.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleDoubleProperty(cellData.getValue().calculateRemaining()).asObject());
-
         colStart.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         colEnd.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
-        // تحميل البيانات فوراً عند فتح الصفحة
+        // ضبط عرض الأعمدة لإزالة الفراغ
+        budgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        budgetTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                updateActiveInfo(newSelection);
+            }
+        });
+
         refreshUI();
 
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now().plusMonths(1));
     }
 
+    private void loadCategories() {
+        List<Category> categories = transactionDAO.getCategoriesByUser(currentUserId);
+        categoryComboBox.setItems(FXCollections.observableArrayList(categories));
+
+        categoryComboBox.setConverter(new javafx.util.StringConverter<Category>() {
+            @Override public String toString(Category object) { return object == null ? "" : object.getName(); }
+            @Override public Category fromString(String string) { return null; }
+        });
+    }
+
     private void refreshUI() {
-        try {
-            // جلب البيانات من الـ DAO باستخدام الـ UserId
-            List<Budget> allBudgets = budgetController.getAllBudgets(currentUserId);
-            ObservableList<Budget> observableBudgets = FXCollections.observableArrayList(allBudgets);
+        List<Budget> allBudgets = budgetController.getAllBudgets(currentUserId);
+        if (allBudgets != null) {
+            budgetTable.setItems(FXCollections.observableArrayList(allBudgets));
+        }
 
-            // تحديث الجدول
-            budgetTable.setItems(observableBudgets);
-            budgetTable.refresh();
-
-            // تحديث الـ Active Budget
-            Budget active = budgetController.getActiveBudget(currentUserId);
-            if (active != null) {
-                updateActiveInfo(active);
-            } else {
-                clearActiveInfo();
-            }
-        } catch (Exception e) {
-            System.err.println("Error refreshing UI: " + e.getMessage());
+        Budget active = budgetController.getActiveBudget(currentUserId);
+        if (active != null) {
+            updateActiveInfo(active);
+        } else {
+            clearActiveInfo();
         }
     }
 
     private void updateActiveInfo(Budget active) {
+        double spent = active.getSpentAmount();
+        double total = active.getAmount();
         double remaining = active.calculateRemaining();
-        totalBudgetLabel.setText("Total Budget: $" + String.format("%.2f", active.getAmount()));
-        spentLabel.setText("Spent: $" + String.format("%.2f", active.getSpentAmount()));
+
+        totalBudgetLabel.setText("Total: $" + String.format("%.2f", total));
+        spentLabel.setText("Spent: $" + String.format("%.2f", spent));
         remainingLabel.setText("Remaining: $" + String.format("%.2f", remaining));
-        remainingLabel.setTextFill(remaining >= 0 ? Color.GREEN : Color.RED);
         periodLabel.setText("Period: " + active.getStartDate() + " to " + active.getEndDate());
 
-        double progress = active.getAmount() > 0 ? (active.getSpentAmount() / active.getAmount()) : 0;
-        budgetProgressBar.setProgress(Math.min(progress, 1.0));
-        percentLabel.setText(String.format("%.1f%% used", progress * 100));
-        percentLabel.setTextFill(Color.BLACK);
+        if (total > 0) {
+            double progress = spent / total;
+            budgetProgressBar.setProgress(Math.min(progress, 1.0));
+            percentLabel.setText(String.format("%.1f%% used", progress * 100));
+
+            if (progress >= (active.getAlertThreshold() / 100.0)) {
+                budgetProgressBar.setStyle("-fx-accent: red;");
+            } else {
+                budgetProgressBar.setStyle("-fx-accent: #159447;");
+            }
+        }
     }
 
     @FXML
     private void handleCreateBudget(ActionEvent event) {
         try {
+            Category selected = categoryComboBox.getValue();
+            if (selected == null) {
+                statusLabel.setText("✗ Select Category!");
+                statusLabel.setTextFill(Color.RED);
+                return;
+            }
+
             double amount = Double.parseDouble(amountField.getText().trim());
             int threshold = Integer.parseInt(thresholdField.getText().trim());
             LocalDate start = startDatePicker.getValue();
             LocalDate end = endDatePicker.getValue();
 
-            boolean success = budgetController.createBudget(currentUserId, amount, start, end, threshold);
+            boolean success = budgetController.createBudget(currentUserId, amount, selected.getCategoryId(), start, end, threshold);
+
             if (success) {
                 statusLabel.setText("✓ Success!");
                 statusLabel.setTextFill(Color.GREEN);
-                refreshUI(); // مناداة التحديث فور الإضافة
+                refreshUI();
             } else {
                 statusLabel.setText("✗ Failed to save.");
                 statusLabel.setTextFill(Color.RED);
@@ -132,10 +161,8 @@ public class BudgetView {
     @FXML
     private void handleDeleteBudget(ActionEvent event) {
         Budget selected = budgetTable.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            if (budgetController.deleteBudget(selected.getBudgetId())) {
-                refreshUI();
-            }
+        if (selected != null && budgetController.deleteBudget(selected.getBudgetId())) {
+            refreshUI();
         }
     }
 
@@ -143,6 +170,7 @@ public class BudgetView {
         totalBudgetLabel.setText("Total Budget: —");
         spentLabel.setText("Spent: —");
         remainingLabel.setText("Remaining: —");
+        periodLabel.setText("Period: —");
         budgetProgressBar.setProgress(0);
         percentLabel.setText("No active budget");
     }

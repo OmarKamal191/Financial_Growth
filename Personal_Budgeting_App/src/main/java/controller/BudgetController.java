@@ -2,25 +2,25 @@ package controller;
 
 import database.BudgetDAO;
 import model.Budget;
-import model.Notification.NotificationType;
 import java.time.LocalDate;
 import java.util.List;
 
 public class BudgetController {
     private BudgetDAO budgetDAO;
-    private NotificationController notificationController;
 
     public BudgetController() {
         this.budgetDAO = new BudgetDAO();
-        this.notificationController = NotificationController.getInstance();
     }
 
-    public boolean createBudget(int userId, double amount, LocalDate startDate, LocalDate endDate, int alertThreshold) {
+    public boolean createBudget(int userId, double amount, int categoryId, LocalDate startDate, LocalDate endDate, int alertThreshold) {
         if (amount <= 0) return false;
         if (startDate == null || endDate == null || endDate.isBefore(startDate)) return false;
         if (alertThreshold < 0 || alertThreshold > 100) alertThreshold = 80;
 
-        Budget budget = new Budget(userId, amount, startDate, endDate, alertThreshold);
+        // إنشاء كائن الميزانية مع تمرير معرف الفئة (categoryId)
+        Budget budget = new Budget(userId, amount, categoryId, startDate, endDate, alertThreshold);
+        budget.setCategoryId(categoryId);
+
         return budgetDAO.createBudget(budget);
     }
 

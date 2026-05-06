@@ -103,9 +103,14 @@ public class SidebarController {
     @FXML public void openNotifications() { navigateTo("Notifications", "/view/Notification.fxml"); }
     @FXML public void openProfile()       { navigateTo("Profile",       "/view/Profile.fxml"); }
 
+    public static void setCurrentPage(String page) {
+        currentPage = page;
+    }
+
     @FXML
     public void logout() {
         currentPage = "Dashboard";
         navigateTo("Dashboard", "/view/Login.fxml");
     }
+
 }

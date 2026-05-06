@@ -1,19 +1,11 @@
 package controller;
 
 import database.ReportDAO;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 import model.Report;
 import model.User;
-
-import java.io.IOException;
 import java.util.List;
 
 public class ReportController {
@@ -28,7 +20,6 @@ public class ReportController {
 
     @FXML
     public void initialize() {
-        // الحصول على بيانات المستخدم المسجل حالياً بدلاً من الرقم الثابت
         User currentUser = AuthController.getCurrentUser();
 
         if (currentUser != null) {
@@ -38,7 +29,6 @@ public class ReportController {
             loadIncomeExpenseBarChart(userId);
             loadInsight(userId);
 
-            // طباعة للتأكد من البيانات في الـ Console
             List<Report> expenses = reportDAO.getExpensesByCategory(userId);
             System.out.println("Debug: Expenses by category count = " + expenses.size());
             for (Report r : expenses) {
@@ -105,38 +95,5 @@ public class ReportController {
                 "💡 You spent the most on " + highest.getLabel() +
                         ". Consider reviewing this category."
         );
-    }
-
-    // ميثود الرجوع للداشبورد الموحدة التي طلبتها سابقاً
-    @FXML
-    private void backToDashboard(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Dashboard.fxml");
-    }
-
-    @FXML
-    private void openDashboard(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Dashboard.fxml");
-    }
-
-    @FXML
-    private void openReports(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Report.fxml");
-    }
-
-    @FXML
-    private void openNotifications(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Notification.fxml");
-    }
-
-    @FXML
-    private void logout(ActionEvent event) throws IOException {
-        switchScene(event, "/view/Login.fxml");
-    }
-
-    private void switchScene(ActionEvent event, String path) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource(path));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
     }
 }
