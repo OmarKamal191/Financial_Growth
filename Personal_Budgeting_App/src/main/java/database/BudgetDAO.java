@@ -1,34 +1,28 @@
 package database;
 
 import model.Budget;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BudgetDAO {
 
-    private Connection connection;
-
     public BudgetDAO() {
-        try {
-            this.connection = DBConnection.getConnection();
-        } catch (SQLException e) {
-            System.out.println("Error connecting to database.");
-            e.printStackTrace();
-        }
     }
 
-
+    // ─── CREATE BUDGET ───────────────────────────────────────────────────────
     public boolean createBudget(Budget budget) {
-        String sql = "INSERT INTO Budgets (UserId, Amount, StartDate, EndDate, AlertThreshold) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO Budgets (UserId, Amount, StartDate, EndDate, AlertThreshold, CategoryId) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setInt(1, budget.getUserId());
             stmt.setDouble(2, budget.getAmount());
             stmt.setDate(3, Date.valueOf(budget.getStartDate()));
             stmt.setDate(4, Date.valueOf(budget.getEndDate()));
             stmt.setInt(5, budget.getAlertThreshold());
+            stmt.setInt(6, budget.getCategoryId());
+
             int rows = stmt.executeUpdate();
             if (rows > 0) {
                 ResultSet keys = stmt.getGeneratedKeys();
@@ -41,10 +35,12 @@ public class BudgetDAO {
         return false;
     }
 
-
+    // ─── UPDATE SPENT AMOUNT ─────────────────────────────────────────────────
     public boolean updateSpentAmount(int budgetId, double spentAmount) {
         String sql = "UPDATE Budgets SET SpentAmount = ? WHERE BudgetId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setDouble(1, spentAmount);
             stmt.setInt(2, budgetId);
             return stmt.executeUpdate() > 0;
@@ -54,16 +50,22 @@ public class BudgetDAO {
         return false;
     }
 
-
+    // ─── GET BUDGETS BY USER (MODIFIED WITH JOIN) ──────────────────────────
     public List<Budget> getBudgetsByUser(int userId) {
         List<Budget> budgets = new ArrayList<>();
-        String sql = "SELECT * FROM Budgets WHERE UserId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // تم إضافة JOIN لجلب اسم الكاتيجوري
+        String sql = "SELECT B.*, C.Name AS CategoryName FROM Budgets B " +
+                "LEFT JOIN Categories C ON B.CategoryId = C.CategoryId " +
+                "WHERE B.UserId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Budget b = mapRowToBudget(rs);
-                if (b != null) budgets.add(b);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Budget b = mapRowToBudget(rs);
+                    if (b != null) budgets.add(b);
+                }
             }
         } catch (SQLException e) {
             System.err.println("getBudgetsByUser failed: " + e.getMessage());
@@ -71,23 +73,35 @@ public class BudgetDAO {
         return budgets;
     }
 
-
+    // ─── GET ACTIVE BUDGET (MODIFIED WITH JOIN) ────────────────────────────
     public Budget getActiveBudget(int userId) {
-        String sql = "SELECT * FROM Budgets WHERE UserId = ? AND EndDate >= CAST(GETDATE() AS DATE)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // تعديل الـ SQL ليجيب أحدث ميزانية مضافة أولاً
+        String sql = "SELECT TOP 1 B.*, C.Name AS CategoryName FROM Budgets B " +
+                "LEFT JOIN Categories C ON B.CategoryId = C.CategoryId " +
+                "WHERE B.UserId = ? AND CAST(GETDATE() AS DATE) BETWEEN B.StartDate AND B.EndDate " +
+                "ORDER BY B.BudgetId DESC"; // الترتيب بالتنازلي لجلب الأحدث
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) return mapRowToBudget(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRowToBudget(rs);
+                }
+            }
         } catch (SQLException e) {
             System.err.println("getActiveBudget failed: " + e.getMessage());
         }
         return null;
     }
 
-
+    // ─── DELETE BUDGET ───────────────────────────────────────────────────────
     public boolean deleteBudget(int budgetId) {
         String sql = "DELETE FROM Budgets WHERE BudgetId = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, budgetId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -96,7 +110,7 @@ public class BudgetDAO {
         return false;
     }
 
-
+    // ─── MAP ROW TO BUDGET (Helper) ──────────────────────────────────────────
     private Budget mapRowToBudget(ResultSet rs) {
         try {
             Budget b = new Budget();
@@ -107,12 +121,14 @@ public class BudgetDAO {
             b.setStartDate(rs.getDate("StartDate").toLocalDate());
             b.setEndDate(rs.getDate("EndDate").toLocalDate());
             b.setAlertThreshold(rs.getInt("AlertThreshold"));
+            b.setCategoryId(rs.getInt("CategoryId"));
+
+            // الآن العمود CategoryName متاح بسبب الـ JOIN في الاستعلام
+            b.setCategoryName(rs.getString("CategoryName"));
+
             return b;
         } catch (SQLException e) {
-            System.err.println("mapRowToBudget - column error: " + e.getMessage());
-            return null;
-        } catch (NullPointerException e) {
-            System.err.println("mapRowToBudget - null date in row: " + e.getMessage());
+            System.err.println("Mapping error: " + e.getMessage());
             return null;
         }
     }
