@@ -110,10 +110,6 @@ public class FinancialGoal {
         return Math.max(0, 100 - ((double) totalDays / 365) * 100);
     }
 
-    public double getRemainingAmount() {
-        return Math.max(0, targetAmount - currentAmount);
-    }
-
     public boolean isFinalState() {
         return status == GoalStatus.ACHIEVED || status == GoalStatus.EXPIRED || status == GoalStatus.CANCELLED;
     }

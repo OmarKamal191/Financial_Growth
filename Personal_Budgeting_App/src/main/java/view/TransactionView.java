@@ -4,18 +4,12 @@ import controller.TransactionController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import model.Category;
 import model.Transaction;
 
 import javafx.event.ActionEvent;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,14 +45,11 @@ public class TransactionView {
 
     @FXML
     public void initialize() {
-        // 1. Setup Form type combo
         if (typeCombo != null)
             typeCombo.setItems(FXCollections.observableArrayList("INCOME", "EXPENSE"));
 
-        // 2. Setup Filter Combos (New)
         setupFilters();
 
-        // 3. Setup Table columns
         if (amountCol != null) amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         if (descCol != null)   descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         if (dateCol != null)   dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -73,12 +64,10 @@ public class TransactionView {
         if (filterTypeCombo != null) {
             filterTypeCombo.setItems(FXCollections.observableArrayList("All Types", "INCOME", "EXPENSE"));
             filterTypeCombo.setValue("All Types");
-            // التحديث عند التغيير
             filterTypeCombo.setOnAction(e -> applyFilters());
         }
 
         if (filterCategoryCombo != null) {
-            // التحديث عند التغيير
             filterCategoryCombo.setOnAction(e -> applyFilters());
         }
     }
@@ -95,7 +84,6 @@ public class TransactionView {
                     .findFirst().orElse(null);
         }
 
-        // مناداة الكنترولر بالميثود الجديدة
         List<Transaction> filtered = transactionController.getFilteredTransactions(type, catId);
         transactionList.setAll(filtered);
     }
@@ -264,7 +252,6 @@ public class TransactionView {
         if (categoryListView != null) categoryListView.setItems(categoryNames);
         if (categoryCombo != null) categoryCombo.setItems(categoryNames);
 
-        // تحديث قائمة الكاتيجوري في الفلتر برضه
         if (filterCategoryCombo != null) filterCategoryCombo.setItems(categoryNames);
     }
 
@@ -283,11 +270,4 @@ public class TransactionView {
         }
     }
 
-    @FXML
-    public void backToDashboard(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
 }

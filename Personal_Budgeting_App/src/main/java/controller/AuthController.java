@@ -21,22 +21,7 @@ public class AuthController {
         return false;
     }
 
-    public boolean updateProfile(String newName,String newEmail, String newPassword) {
-        if (currentUser != null) {
-            boolean success = userDAO.updateProfile(currentUser.getUserId(), newName, newEmail, newPassword);
-            if (success) {
-                currentUser.setName(newName);
-            }
-            return success;
-        }
-        return false;
-    }
-
     public static User getCurrentUser() {
         return currentUser;
-    }
-
-    public void logout() {
-        currentUser = null;
     }
 }

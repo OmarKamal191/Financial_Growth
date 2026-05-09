@@ -7,10 +7,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object for Notification.
- * Handles all database operations: create, read, mark as read.
- */
 public class NotificationDAO {
 
     private Connection connection;
@@ -19,17 +15,11 @@ public class NotificationDAO {
         try {
             this.connection = DBConnection.getConnection();
         } catch (SQLException e) {
-            // طباعة تفاصيل الخطأ في الـ Console عشان تعرف المشكلة فين بالظبط
             System.err.println("Error: Could not establish connection in NotificationDAO");
             e.printStackTrace();
         }
     }
 
-    /**
-     * Inserts a new notification into the database.
-     * @param notification the notification to save
-     * @return true if successful
-     */
     public boolean saveNotification(Notification notification) {
         String sql = "INSERT INTO Notifications (UserId, Message, Type, IsRead, CreatedAt) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -50,11 +40,6 @@ public class NotificationDAO {
         return false;
     }
 
-    /**
-     * Retrieves all notifications for a user, ordered by newest first.
-     * @param userId the user's ID
-     * @return list of Notification objects
-     */
     public List<Notification> getNotificationsByUser(int userId) {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT * FROM Notifications WHERE UserId = ? ORDER BY CreatedAt DESC";
@@ -70,15 +55,10 @@ public class NotificationDAO {
         return notifications;
     }
 
-    /**
-     * Retrieves only unread notifications for a user.
-     * @param userId the user's ID
-     * @return list of unread Notification objects
-     */
     public List<Notification> getUnreadNotifications(int userId) {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT * FROM Notifications WHERE UserId = ? AND IsRead = 0 ORDER BY CreatedAt DESC";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -90,11 +70,6 @@ public class NotificationDAO {
         return notifications;
     }
 
-    /**
-     * Marks a specific notification as read.
-     * @param notificationId the notification ID
-     * @return true if successful
-     */
     public boolean markAsRead(int notificationId) {
         String sql = "UPDATE Notifications SET IsRead = 1 WHERE NotificationId = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -106,11 +81,6 @@ public class NotificationDAO {
         return false;
     }
 
-    /**
-     * Marks all notifications for a user as read.
-     * @param userId the user's ID
-     * @return true if successful
-     */
     public boolean markAllAsRead(int userId) {
         String sql = "UPDATE Notifications SET IsRead = 1 WHERE UserId = ? AND IsRead = 0";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

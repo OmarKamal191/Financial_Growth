@@ -7,7 +7,7 @@ public class Budget {
     private int userId;
     private double amount;
     private int CategoryId;
-    private String categoryName; // أضفنا هذا الحقل
+    private String categoryName;
     private double spentAmount;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -30,7 +30,6 @@ public class Budget {
     }
 
     // Getters and Setters
-    public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
     public int getBudgetId() { return budgetId; }

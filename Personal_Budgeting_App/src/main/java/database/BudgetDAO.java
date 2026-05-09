@@ -53,7 +53,6 @@ public class BudgetDAO {
     // ─── GET BUDGETS BY USER (MODIFIED WITH JOIN) ──────────────────────────
     public List<Budget> getBudgetsByUser(int userId) {
         List<Budget> budgets = new ArrayList<>();
-        // تم إضافة JOIN لجلب اسم الكاتيجوري
         String sql = "SELECT B.*, C.Name AS CategoryName FROM Budgets B " +
                 "LEFT JOIN Categories C ON B.CategoryId = C.CategoryId " +
                 "WHERE B.UserId = ?";
@@ -75,11 +74,10 @@ public class BudgetDAO {
 
     // ─── GET ACTIVE BUDGET (MODIFIED WITH JOIN) ────────────────────────────
     public Budget getActiveBudget(int userId) {
-        // تعديل الـ SQL ليجيب أحدث ميزانية مضافة أولاً
         String sql = "SELECT TOP 1 B.*, C.Name AS CategoryName FROM Budgets B " +
                 "LEFT JOIN Categories C ON B.CategoryId = C.CategoryId " +
                 "WHERE B.UserId = ? AND CAST(GETDATE() AS DATE) BETWEEN B.StartDate AND B.EndDate " +
-                "ORDER BY B.BudgetId DESC"; // الترتيب بالتنازلي لجلب الأحدث
+                "ORDER BY B.BudgetId DESC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -123,7 +121,6 @@ public class BudgetDAO {
             b.setAlertThreshold(rs.getInt("AlertThreshold"));
             b.setCategoryId(rs.getInt("CategoryId"));
 
-            // الآن العمود CategoryName متاح بسبب الـ JOIN في الاستعلام
             b.setCategoryName(rs.getString("CategoryName"));
 
             return b;

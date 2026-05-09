@@ -17,7 +17,6 @@ public class BudgetController {
         if (startDate == null || endDate == null || endDate.isBefore(startDate)) return false;
         if (alertThreshold < 0 || alertThreshold > 100) alertThreshold = 80;
 
-        // إنشاء كائن الميزانية مع تمرير معرف الفئة (categoryId)
         Budget budget = new Budget(userId, amount, categoryId, startDate, endDate, alertThreshold);
         budget.setCategoryId(categoryId);
 

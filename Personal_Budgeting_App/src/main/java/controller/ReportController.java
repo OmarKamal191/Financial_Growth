@@ -14,8 +14,6 @@ public class ReportController {
 
     @FXML private PieChart expensePieChart;
     @FXML private BarChart<String, Number> incomeExpenseBarChart;
-    @FXML private CategoryAxis monthAxis;
-    @FXML private NumberAxis amountAxis;
     @FXML private Label insightLabel;
 
     @FXML

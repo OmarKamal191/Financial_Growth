@@ -80,7 +80,7 @@ public class UserDAO {
     }
 
     public User getUserById(int userId) {
-        String sql = "SELECT * FROM Users WHERE UserId = ?"; // تأكد أن اسم العمود UserId صح في جدولك
+        String sql = "SELECT * FROM Users WHERE UserId = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -99,6 +99,6 @@ public class UserDAO {
             System.err.println("Error fetching user: " + e.getMessage());
             e.printStackTrace();
         }
-        return null; // لو اليوزر مش موجود
+        return null;
     }
 }
