@@ -22,17 +22,6 @@ public class NotificationController {
         return instance;
     }
 
-    public Notification createNotification(int userId, NotificationType type) {
-        String message = buildMessage(type);
-        Notification notification = new Notification(userId, message, type);
-        notification.sendNotification();
-        boolean saved = notificationDAO.saveNotification(notification);
-        if (saved) {
-            return notification;
-        }
-        return null;
-    }
-
     public Notification createNotification(int userId, NotificationType type, String customMessage) {
         Notification notification = new Notification(userId, customMessage, type);
         notification.sendNotification();
@@ -42,10 +31,6 @@ public class NotificationController {
 
     public List<Notification> getNotifications(int userId) {
         return notificationDAO.getNotificationsByUser(userId);
-    }
-
-    public List<Notification> getUnreadNotifications(int userId) {
-        return notificationDAO.getUnreadNotifications(userId);
     }
 
     public boolean markAsRead(int notificationId) {
@@ -60,13 +45,4 @@ public class NotificationController {
         return notificationDAO.getUnreadNotifications(userId).size();
     }
 
-    private String buildMessage(NotificationType type) {
-        switch (type) {
-            case WARNING:    return "Warning: You are approaching your budget limit!";
-            case EXCEEDED:   return "Alert: You have exceeded your budget limit!";
-            case GOAL_ACHIEVED: return "Congratulations! You have achieved your financial goal!";
-            case GOAL_EXPIRED:  return "Your financial goal has expired without being achieved.";
-            default:         return "You have a new notification.";
-        }
-    }
 }

@@ -7,17 +7,11 @@ import model.Category;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import model.Budget;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,7 +32,7 @@ public class BudgetView {
     @FXML private ProgressBar budgetProgressBar;
 
     @FXML private TableView<Budget> budgetTable;
-    @FXML private TableColumn<Budget, String> colCategory; // تم التغيير لـ String لعرض الاسم
+    @FXML private TableColumn<Budget, String> colCategory;
     @FXML private TableColumn<Budget, Double> colAmount;
     @FXML private TableColumn<Budget, Double> colSpent;
     @FXML private TableColumn<Budget, Double> colRemaining;
@@ -57,7 +51,6 @@ public class BudgetView {
 
         loadCategories();
 
-        // ربط الأعمدة (التأكد من استخدام categoryName)
         colCategory.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colSpent.setCellValueFactory(new PropertyValueFactory<>("spentAmount"));
@@ -66,7 +59,6 @@ public class BudgetView {
         colStart.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         colEnd.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
-        // ضبط عرض الأعمدة لإزالة الفراغ
         budgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         budgetTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -175,11 +167,4 @@ public class BudgetView {
         percentLabel.setText("No active budget");
     }
 
-    @FXML
-    private void backToDashboard(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
 }

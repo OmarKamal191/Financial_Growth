@@ -27,8 +27,6 @@ public abstract class Transaction {
 
     // Getters and Setters
     public int getTransactionId() { return transactionId; }
-    public void setTransactionId(int transactionId) { this.transactionId = transactionId; }
-
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
@@ -36,7 +34,6 @@ public abstract class Transaction {
     public void setAmount(double amount) { this.amount = amount; }
 
     public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
 
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }

@@ -13,11 +13,6 @@ public class Category {
         this.name = name;
     }
 
-    public String createCategory(String name) {
-        this.name = name;
-        return this.name;
-    }
-
     // Getters and Setters
     public int getCategoryId() { return categoryId; }
     public void setCategoryId(int categoryId) { this.categoryId = categoryId; }

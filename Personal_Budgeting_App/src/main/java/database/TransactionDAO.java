@@ -27,7 +27,6 @@ public class TransactionDAO {
 
             boolean success = pstmt.executeUpdate() > 0;
 
-            // تحديث البادجت تلقائياً لو العملية مصروف ولها فئة
             if (success && "EXPENSE".equalsIgnoreCase(type) && categoryId != null) {
                 updateBudgetSpending(userId, categoryId, amount, date);
             }
@@ -39,7 +38,6 @@ public class TransactionDAO {
         }
     }
 
-    // ميثود مساعدة لتحديث الاستهلاك في جدول البادجت
     private void updateBudgetSpending(int userId, int categoryId, double amount, LocalDate date) {
         String sql = "UPDATE Budgets SET SpentAmount = SpentAmount + ? " +
                 "WHERE UserId = ? AND CategoryId = ? " +
@@ -62,12 +60,10 @@ public class TransactionDAO {
         String deleteSql = "DELETE FROM Transactions WHERE TransactionId = ?";
 
         try (Connection conn = DBConnection.getConnection()) {
-            // استرجاع البيانات قبل المسح لتعديل البادجت
             try (PreparedStatement pstmt = conn.prepareStatement(getSql)) {
                 pstmt.setInt(1, transactionId);
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next() && "EXPENSE".equalsIgnoreCase(rs.getString("Type"))) {
-                    // طرح القيمة من البادجت بإرسال قيمة سالبة
                     updateBudgetSpending(rs.getInt("UserId"), rs.getInt("CategoryId"), -rs.getDouble("Amount"), rs.getDate("Date").toLocalDate());
                 }
             }
@@ -81,7 +77,6 @@ public class TransactionDAO {
         }
     }
 
-    // بقية الميثودات (updateTransaction, getTransactionsByUser, getFilteredTransactions, addCategory, etc.) تبقى كما هي في كودك الأصلي
     public boolean updateTransaction(int transactionId, double amount, String description, LocalDate date, Integer categoryId) {
         String sql = "UPDATE Transactions SET Amount = ?, Description = ?, Date = ?, CategoryId = ? WHERE TransactionId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -165,8 +160,6 @@ public class TransactionDAO {
     }
 
     public boolean deleteCategory(int categoryId) {
-        // 1. استعلامات المسح
-        // بنصفر الـ CategoryId في الترانزكشن والبادجت عشان ميبقاش فيه تعارض (أو نمسحهم حسب رغبتك)
         String updateTransactionsSql = "UPDATE Transactions SET CategoryId = NULL WHERE CategoryId = ?";
         String updateBudgetsSql = "UPDATE Budgets SET CategoryId = NULL WHERE CategoryId = ?";
         String deleteCategorySql = "DELETE FROM Categories WHERE CategoryId = ?";
@@ -174,39 +167,32 @@ public class TransactionDAO {
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
-            // 2. وقف الـ Auto-Commit عشان نبدأ الـ Transaction
             conn.setAutoCommit(false);
 
-            // 3. تحديث العمليات المربوطة بالفئة (نخليها بدون فئة بدل ما تتمسح)
             try (PreparedStatement pstmt1 = conn.prepareStatement(updateTransactionsSql)) {
                 pstmt1.setInt(1, categoryId);
                 pstmt1.executeUpdate();
             }
 
-            // 4. تحديث الميزانيات المربوطة بالفئة
             try (PreparedStatement pstmt2 = conn.prepareStatement(updateBudgetsSql)) {
                 pstmt2.setInt(1, categoryId);
                 pstmt2.executeUpdate();
             }
 
-            // 5. مسح الفئة نفسها
             try (PreparedStatement pstmt3 = conn.prepareStatement(deleteCategorySql)) {
                 pstmt3.setInt(1, categoryId);
                 int rowsDeleted = pstmt3.executeUpdate();
 
                 if (rowsDeleted > 0) {
-                    // 6. لو كله تمام، ثبت التغييرات
                     conn.commit();
                     return true;
                 } else {
-                    // لو الفئة أصلاً مش موجودة
                     conn.rollback();
                     return false;
                 }
             }
 
         } catch (SQLException e) {
-            // 7. لو حصل أي Error في أي خطوة، ارجع في كل اللي عملته
             if (conn != null) {
                 try {
                     conn.rollback();
@@ -218,7 +204,6 @@ public class TransactionDAO {
             e.printStackTrace();
             return false;
         } finally {
-            // 8. رجع الـ Auto-Commit للوضع الطبيعي واقفل الكونيكشن
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);

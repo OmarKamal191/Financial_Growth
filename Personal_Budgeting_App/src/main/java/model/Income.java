@@ -13,10 +13,6 @@ public class Income extends Transaction {
         super(transactionId, userId, amount, description, date, "INCOME");
     }
 
-    public void addIncome(double amount) {
-        setAmount(amount);
-    }
-
     @Override
     public boolean save() {
         // Handled via TransactionDAO

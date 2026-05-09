@@ -33,10 +33,6 @@ public class Notification {
         this.isRead = false;
     }
 
-    public void markAsRead() {
-        this.isRead = true;
-    }
-
     public int getNotificationId() { return notificationId; }
     public void setNotificationId(int notificationId) { this.notificationId = notificationId; }
 

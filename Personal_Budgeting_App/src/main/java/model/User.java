@@ -32,10 +32,4 @@ public class User {
     public double getBalance() { return balance; }
     public void setBalance(double balance) { this.balance = balance; }
 
-
-    public void updateProfile(String name,String email, String password) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
 }

@@ -43,12 +43,4 @@ public class ProfileView {
         stage.setScene(new Scene(root));
         stage.show();
     }
-
-    @FXML
-    private void backToDashboard(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
 }
